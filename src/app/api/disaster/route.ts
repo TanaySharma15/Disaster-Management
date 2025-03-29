@@ -1,14 +1,6 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-// function format_time(s: any) {
-//   let newTime = new Date(1549312452 * 1000)
-//     .toISOString()
-//     .slice(0, 19)
-//     .replace("T", " ");
-
-//   return newTime;
-// }
 const disasterTypes = {
   Earthquake: ["earthquake", "seismic"],
   Flood: ["flood", "inundation"],

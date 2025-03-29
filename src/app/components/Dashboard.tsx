@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import { Container, Typography } from "@mui/material";
-import MapComponent from "./MapComponents";
+import MapComponent from "./MapComponent";
 import NewsList from "./NewsList";
 
 const fetcher = (url: any) => fetch(url).then((res) => res.json());

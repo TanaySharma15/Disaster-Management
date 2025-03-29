@@ -1,21 +1,25 @@
 "use client";
 
+import useSWR from "swr";
 import { Container, Typography } from "@mui/material";
-import NewsList from "../components/NewsList";
-import NewsFetcher from "../components/News-fetcher";
+import NewsList from "@/app/components/NewsList";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function LatestNewsPage() {
-  const { news, loading, error } = NewsFetcher();
+  const { data, error } = useSWR("/api/disaster/latest-news", fetcher, {
+    refreshInterval: 300000,
+  });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Failed to load news</div>;
+  if (error) return <div>Failed to load</div>;
+  if (!data) return <div>Loading...</div>;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Latest Disaster News
+        Web-Scraped News
       </Typography>
-      <NewsList news={news} />
+      <NewsList news={data.latestNews} />
     </Container>
   );
 }

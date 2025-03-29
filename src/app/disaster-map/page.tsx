@@ -1,11 +1,11 @@
 import { Container, Typography } from "@mui/material";
 import React from "react";
-import NewsFetcher from "./components/News-fetcher"; // Import Client Component
+import NewsFetcher from "@/app/components/News-fetcher";
 
 export default function Page() {
   return (
     <Container>
-      <Typography variant="h4">Disaster Information</Typography>
+      <Typography variant="h4">Disaster Info</Typography>
       <NewsFetcher />
     </Container>
   );
