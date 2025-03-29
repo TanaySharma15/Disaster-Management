@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +26,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              Disaster Dashboard
+            </Typography>
+            <Button color="inherit" component={Link} href="/">
+              Dashboard
+            </Button>
+            <Button color="inherit" component={Link} href="/latest-news">
+              Latest News
+            </Button>
+          </Toolbar>
+        </AppBar>
         {children}
       </body>
     </html>
