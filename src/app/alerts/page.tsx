@@ -100,17 +100,9 @@ export default function AlertsDashboard() {
                   {totalAlerts}
                 </Badge>
               </Link>
-              <Link href="#" className="flex items-center gap-2">
+              <Link href="/disaster-map" className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
                 <span>Map View</span>
-              </Link>
-              <Link href="#" className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                <span>Messages</span>
-              </Link>
-              <Link href="#" className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                <span>Settings</span>
               </Link>
             </nav>
           </SheetContent>
@@ -167,19 +159,11 @@ export default function AlertsDashboard() {
               </Badge>
             </Link>
             <Link
-              href="#"
+              href="/disaster-map"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-red-600"
             >
               <MapPin className="h-5 w-5" />
               <span>Map View</span>
-            </Link>
-
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-red-600"
-            >
-              <Settings className="h-5 w-5" />
-              <span>Settings</span>
             </Link>
           </nav>
         </aside>
