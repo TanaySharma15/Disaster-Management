@@ -37,21 +37,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import MapComponent from "@/app/components/MapComponent";
+import dynamic from "next/dynamic";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
+const DynamicMapComponent = dynamic(
+  () => import("@/app/components/MapComponent"),
+  {
+    ssr: false,
+  }
+);
 export default function Dashboard() {
-  // Always call SWR hook unconditionally
   const { data, error } = useSWR("/api/disaster", fetcher);
 
-  // Use default empty arrays if data isn't loaded yet
   const earthquakeData = data?.earthquake || [];
   const newsData = data?.news || [];
 
-  // Compute dynamic stats
   const activeIncidents = earthquakeData.length;
   const affectedAreas = new Set(earthquakeData.map((eq: any) => eq.place)).size;
-  const socialReports = 0; // Update if you have social data
+  const socialReports = 0;
   const newsSources = new Set(
     newsData.map((n: any) => {
       try {
@@ -62,7 +66,6 @@ export default function Dashboard() {
     })
   ).size;
 
-  // Combine earthquake and news incidents into one array
   const incidents = useMemo(() => {
     const eqIncidents = earthquakeData.map((eq: any) => ({
       type: "earthquake",
@@ -96,7 +99,6 @@ export default function Dashboard() {
     console.log("Fetched dashboard data:", data);
   }, [data]);
 
-  // Render loading UI if data is not available
   if (error)
     return (
       <div className="flex items-center justify-center h-screen">
@@ -111,14 +113,13 @@ export default function Dashboard() {
       </div>
     );
 
-  // Filter incidents for tabs
   const allIncidents = incidents;
   const newsIncidents = incidents.filter((i) => i.type === "news");
   const earthquakeIncidents = incidents.filter((i) => i.type === "earthquake");
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Header with responsive sidebar trigger */}
+      {/* Header  */}
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-16 sm:px-6">
         <Sheet>
           <SheetTrigger asChild>
@@ -136,18 +137,15 @@ export default function Dashboard() {
                 <AlertCircle className="h-6 w-6 text-red-600" />
                 <span>DisasterWatch</span>
               </Link>
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 text-red-600"
-              >
+              <Link href="/" className="flex items-center gap-2 text-red-600">
                 <Home className="h-5 w-5" />
                 <span>Dashboard</span>
               </Link>
-              <Link href="#" className="flex items-center gap-2">
+              <Link href="/disaster-map" className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
                 <span>Map View</span>
               </Link>
-              <Link href="#" className="flex items-center gap-2">
+              <Link href="/alerts" className="flex items-center gap-2">
                 <Bell className="h-5 w-5" />
                 <span>Alerts</span>
               </Link>
@@ -192,46 +190,32 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Main layout with sidebar and content */}
+      {/*  sidebar and content */}
       <div className="grid flex-1 md:grid-cols-[220px_1fr]">
-        {/* Sidebar for desktop */}
+        {/* Sidebar */}
         <aside className="hidden border-r bg-background md:block">
           <nav className="grid gap-2 p-4 text-sm font-medium">
             <Link
-              href="/dashboard"
+              href="/"
               className="flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 text-red-600 dark:bg-gray-800"
             >
               <Home className="h-5 w-5" />
               <span>Dashboard</span>
             </Link>
             <Link
-              href="#"
+              href="/disaster-map"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600"
             >
               <MapPin className="h-5 w-5" />
               <span>Map View</span>
             </Link>
             <Link
-              href="#"
+              href="/alerts"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600"
             >
               <Bell className="h-5 w-5" />
               <span>Alerts</span>
               <Badge className="ml-auto bg-red-600 hover:bg-red-700">5</Badge>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600"
-            >
-              <MessageSquare className="h-5 w-5" />
-              <span>Messages</span>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600"
-            >
-              <Calendar className="h-5 w-5" />
-              <span>Calendar</span>
             </Link>
             <Link
               href="#"
@@ -243,7 +227,7 @@ export default function Dashboard() {
           </nav>
         </aside>
 
-        {/* Main Content */}
+        {/* Main  */}
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
           <div className="flex items-center gap-4">
             <h1 className="flex-1 text-lg font-semibold md:text-2xl">
@@ -269,7 +253,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Stats Cards */}
+          {/*  Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -331,9 +315,9 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Combined Map and Recent Incidents */}
+          {/*  Map  */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            {/* Disaster Map Overview */}
+            {/*  Map Overview  */}
             <Card className="col-span-4">
               <CardHeader>
                 <CardTitle>Disaster Map Overview</CardTitle>
@@ -342,32 +326,14 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="h-[400px] rounded-md border bg-gray-100 dark:bg-gray-800 relative">
-                  {/* Replace the placeholder with your map component if available */}
-                  <img
-                    src="/placeholder.svg?height=400&width=800"
-                    alt="Map visualization"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 right-2 bg-white dark:bg-gray-950 p-2 rounded-md shadow-md">
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="h-3 w-3 rounded-full bg-red-500"></span>
-                      <span>Severe</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="h-3 w-3 rounded-full bg-orange-500"></span>
-                      <span>Moderate</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
-                      <span>Minor</span>
-                    </div>
-                  </div>
+                {/* Integrate the MapComponent here */}
+                <div className="h-[400px]">
+                  <DynamicMapComponent earthquakes={earthquakeData} />
                 </div>
               </CardContent>
             </Card>
 
-            {/* Recent Incidents Feed */}
+            {/* Recent  */}
             <Card className="col-span-3">
               <CardHeader>
                 <CardTitle>Recent Incidents</CardTitle>
@@ -410,7 +376,7 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Tabs for Incident Feeds */}
+          {/*  Incident  */}
           <div>
             <Tabs defaultValue="all" className="w-full">
               <div className="flex items-center justify-between">

@@ -1,12 +1,17 @@
-import { Container, Typography } from "@mui/material";
-import React from "react";
-import NewsFetcher from "@/app/components/News-fetcher";
+"use client";
 
-export default function Page() {
+import dynamic from "next/dynamic";
+
+// Dynamically import the full-page map component (client-side only)
+const FullPageMap = dynamic(() => import("@/app/components/FullMap"), {
+  ssr: false,
+});
+
+export default function DisasterMapPage() {
   return (
-    <Container>
-      <Typography variant="h4">Disaster Info</Typography>
-      <NewsFetcher />
-    </Container>
+    <div className="h-screen w-screen">
+      {/* Optionally, you can add a header or navigation overlay here */}
+      <FullPageMap />
+    </div>
   );
 }
